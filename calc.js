@@ -20,7 +20,7 @@
    * grupo: entrada de CALC_CONFIG.materias[x].grupos[y]
    * datos: {
    *   asistencias: number|null,
-   *   examenes: [0..100|null], tareas: [0|0.5|1|null], equipo: [0..100|null],
+   *   examenes: [0..100|null], tareas: [0|0.5|1|null], equipo: [0|1|null],
    *   proyecto: 0..100|null, otros: 0..100|null
    * }
    */
@@ -36,7 +36,7 @@
 
     const ex = (datos.examenes || []).map((v) => (isNum(v) ? clamp01(v / 100) : null));
     const ta = (datos.tareas || []).map((v) => (isNum(v) ? clamp01(v) : null));
-    const eq = (datos.equipo || []).map((v) => (isNum(v) ? clamp01(v / 100) : null));
+    const eq = (datos.equipo || []).map((v) => (isNum(v) ? clamp01(v) : null)); // 1 = presentó, 0 = no presentó
 
     const avg = (a) => { const k = known(a); return k.length ? k.reduce((s, x) => s + x, 0) / k.length : null; };
 

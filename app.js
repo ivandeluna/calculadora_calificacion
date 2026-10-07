@@ -28,20 +28,28 @@
   const grupoActual = () => C.materias[selMateria.value].grupos[selGrupo.value];
 
   // ---------- construcción del formulario
-  function numInput(id, label, max, hint, step = "any") {
-    return `<label class="field"><span>${label}</span>
+  // Un elemento de la config puede ser "Tarea 1" o { nombre: "Tarea 1", descripcion: "…" }
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const nombreDe = (it) => (typeof it === "string" ? it : it.nombre || "");
+  const descDe = (it) => (typeof it === "string" ? "" : it.descripcion || "");
+
+  function numInput(id, label, max, hint, step = "any", desc = "") {
+    return `<label class="field"><span>${esc(label)}</span>
+      ${desc ? `<small class="desc">${esc(desc)}</small>` : ""}
       <input type="number" inputmode="decimal" id="${id}" min="0" max="${max}" step="${step}" placeholder="0–${max}">
       ${hint ? `<small>${hint}</small>` : ""}</label>`;
   }
-  function tareaInput(id, label) {
-    return `<label class="field"><span>${label}</span>
-      <select id="${id}">
-        <option value="">— elige —</option>
-        <option value="1">Completa</option>
-        <option value="0.5">Incompleta</option>
-        <option value="0">No entregada</option>
+  // Fila con nombre + descripción a la izquierda y selector a la derecha
+  function filaSelect(id, item, opciones) {
+    const d = descDe(item);
+    return `<label class="item-row">
+      <span class="item-txt"><span class="item-name">${esc(nombreDe(item))}</span>${d ? `<span class="item-desc">${esc(d)}</span>` : ""}</span>
+      <select id="${id}"><option value="">— elige —</option>
+        ${opciones.map(([v, t]) => `<option value="${v}">${t}</option>`).join("")}
       </select></label>`;
   }
+  const OPC_TAREA = [["1", "Completa"], ["0.5", "Incompleta"], ["0", "No entregada"]];
+  const OPC_EQUIPO = [["1", "Presenté"], ["0", "No presenté"]];
 
   function construir() {
     const g = grupoActual();
@@ -53,18 +61,18 @@
 
     if (g.examenes.length) {
       html.push(`<fieldset><legend>Parciales <em>50%</em></legend><div class="grid">
-        ${g.examenes.map((n, i) => numInput(`ex${i}`, n, 100, "", "any")).join("")}
+        ${g.examenes.map((it, i) => numInput(`ex${i}`, nombreDe(it), 100, "", "any", descDe(it))).join("")}
         </div></fieldset>`);
     }
     if (g.tareas.length) {
-      html.push(`<fieldset><legend>Tareas <em>20%</em></legend><div class="grid">
-        ${g.tareas.map((n, i) => tareaInput(`ta${i}`, n)).join("")}
+      html.push(`<fieldset><legend>Tareas <em>20%</em></legend><div class="items">
+        ${g.tareas.map((it, i) => filaSelect(`ta${i}`, it, OPC_TAREA)).join("")}
         </div></fieldset>`);
     }
     if (g.equipo.length) {
       html.push(`<fieldset><legend>Trabajo en equipo <em>5%</em></legend>
-        <p class="note">Es la calificación que tu equipo te asignó (autoevaluación). Si presentaste y no hubo ajuste, pon 100.</p><div class="grid">
-        ${g.equipo.map((n, i) => numInput(`eq${i}`, n, 100, "", "any")).join("")}
+        <p class="note">Exposiciones en equipo: cuenta si presentaste o no.</p><div class="items">
+        ${g.equipo.map((it, i) => filaSelect(`eq${i}`, it, OPC_EQUIPO)).join("")}
         </div></fieldset>`);
     }
     if (g.proyecto) {
@@ -81,11 +89,15 @@
     if (!g.proyecto) pend.push("proyecto");
     if (!g.otros) pend.push("otros");
     if (pend.length) {
-      html.push(`<p class="note muted">Aún no se evalúa en tu grupo: ${pend.join(", ")}. No cuentan en tu calificación actual, pero sí en la proyección.</p>`);
+      html.push(`<div class="callout" role="note">
+        <span class="callout-icon" aria-hidden="true">!</span>
+        <div><strong>Aún no se evalúa en tu grupo: ${pend.join(", ")}.</strong>
+        <p>Por eso no cuentan en tu calificación de hoy, que se calcula sólo con lo ya evaluado. Sí se incluyen en la proyección al final del semestre.</p></div>
+      </div>`);
     }
 
     $("inputs").innerHTML = html.join("");
-    $("meta").textContent = `Evaluado en ${selGrupo.value}: ${g.examenes.length} parcial(es), ${g.tareas.length} tarea(s)${g.equipo.length ? `, ${g.equipo.length} actividad(es) de equipo` : ""}.`;
+    $("meta").textContent = `Evaluado en ${selGrupo.value}: ${g.examenes.length} parcial(es), ${g.tareas.length} tarea(s)${g.equipo.length ? `, ${g.equipo.length} exposición(es) en equipo` : ""}.`;
     $("inputs").querySelectorAll("input, select").forEach((el) => el.addEventListener("input", calcular));
     calcular();
   }
@@ -128,9 +140,9 @@
     // Faltantes
     const falt = [];
     if (datos.asistencias === null) falt.push("asistencias");
-    g.examenes.forEach((n, i) => { if (datos.examenes[i] === null) falt.push(n); });
-    g.tareas.forEach((n, i) => { if (datos.tareas[i] === null) falt.push(n); });
-    g.equipo.forEach((n, i) => { if (datos.equipo[i] === null) falt.push(n); });
+    g.examenes.forEach((it, i) => { if (datos.examenes[i] === null) falt.push(nombreDe(it)); });
+    g.tareas.forEach((it, i) => { if (datos.tareas[i] === null) falt.push(nombreDe(it)); });
+    g.equipo.forEach((it, i) => { if (datos.equipo[i] === null) falt.push(nombreDe(it)); });
     if (g.proyecto && datos.proyecto === null) falt.push("proyecto");
     if (g.otros && datos.otros === null) falt.push("otros");
     const fEl = $("faltan");

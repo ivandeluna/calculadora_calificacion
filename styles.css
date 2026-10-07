@@ -12,19 +12,21 @@
   --bad-soft: #fbe9e6;
   --warn-soft: #fff4d6;
   --warn-ink: #7a5600;
+  --warn-strong: #d18b00;
+  --warn-line: #f0d48a;
   --radius: 14px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #12151c; --surface: #1a1f29; --ink: #e9e6df; --muted: #9aa0ab; --line: #2c3340;
     --accent: #8ab4e0; --accent-soft: #1e2a3a; --ok: #5fcf96; --ok-soft: #173126;
-    --bad: #f08a7c; --bad-soft: #3a1f1c; --warn-soft: #33290f; --warn-ink: #f0cf7a;
+    --bad: #f08a7c; --bad-soft: #3a1f1c; --warn-soft: #33290f; --warn-ink: #f0cf7a; --warn-strong: #d99a1a; --warn-line: #5a4716;
   }
 }
 :root[data-theme="dark"] {
   --bg: #12151c; --surface: #1a1f29; --ink: #e9e6df; --muted: #9aa0ab; --line: #2c3340;
   --accent: #8ab4e0; --accent-soft: #1e2a3a; --ok: #5fcf96; --ok-soft: #173126;
-  --bad: #f08a7c; --bad-soft: #3a1f1c; --warn-soft: #33290f; --warn-ink: #f0cf7a;
+  --bad: #f08a7c; --bad-soft: #3a1f1c; --warn-soft: #33290f; --warn-ink: #f0cf7a; --warn-strong: #d99a1a; --warn-line: #5a4716;
 }
 
 * { box-sizing: border-box; }
@@ -97,3 +99,18 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 .fine { font-size: 12px; color: var(--muted); margin: 14px 0 0; }
 
 .foot { color: var(--muted); font-size: 13px; padding-bottom: 40px; }
+
+/* Tareas y exposiciones: nombre + descripción + selector */
+.items { display: flex; flex-direction: column; gap: 10px; }
+.item-row { display: grid; grid-template-columns: 1fr minmax(150px, 190px); gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.item-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.item-name { font-weight: 600; font-size: 14px; }
+.item-desc, .desc { font-size: 13px; color: var(--muted); font-weight: 400; }
+.item-row select { background: var(--surface); }
+@media (max-width: 420px) { .item-row { grid-template-columns: 1fr; } }
+
+/* Aviso de rubros sin evaluar */
+.callout { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 14px 16px; border-radius: 12px; background: var(--warn-soft); border: 1px solid var(--warn-line); border-left: 5px solid var(--warn-strong); color: var(--ink); }
+.callout strong { display: block; color: var(--warn-ink); font-size: 15px; }
+.callout p { margin: 4px 0 0; font-size: 14px; }
+.callout-icon { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--warn-strong); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: 15px; }
