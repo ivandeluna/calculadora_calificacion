@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Calificación</title>
+  <meta name="description" content="Estima tu calificación en Aplicar Administración Financiera o Manejar Finanzas Internacionales. Todo se calcula en tu navegador; no se guarda ni envía nada.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <p class="eyebrow">FCA · Estimador de calificación</p>
+      <h1>¿Cuánto llevo?</h1>
+      <p class="lede">Captura lo que has obtenido y la calculadora aplica la misma ponderación que usa el profesor. Es anónima: todo se calcula en tu navegador y no se guarda ni se envía nada.</p>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <section class="panel" aria-labelledby="t-datos">
+      <h2 id="t-datos">1 · Tu materia y grupo</h2>
+      <div class="row2">
+        <label class="field">
+          <span>Materia</span>
+          <select id="materia"></select>
+        </label>
+        <label class="field">
+          <span>Grupo</span>
+          <select id="grupo"></select>
+        </label>
+      </div>
+      <p class="meta" id="meta"></p>
+
+      <h2>2 · Lo que llevas</h2>
+      <div id="inputs"></div>
+    </section>
+
+    <aside class="panel result" aria-labelledby="t-res" aria-live="polite">
+      <h2 id="t-res">Tu calificación hasta hoy</h2>
+      <div class="big">
+        <span id="actual" class="num">—</span>
+        <span class="of">/ 100</span>
+      </div>
+      <p id="estatus" class="status"></p>
+      <p class="hint">Calculada sólo con los rubros que ya se evaluaron en tu grupo, reescalada a 100 (igual que en los cortes).</p>
+
+      <table class="breakdown" aria-label="Desglose por rubro">
+        <thead><tr><th>Rubro</th><th>Peso</th><th>Tu %</th></tr></thead>
+        <tbody id="desglose"></tbody>
+      </table>
+
+      <div id="faltan" class="warn" hidden></div>
+
+      <h2 class="mt">Proyección al final del semestre</h2>
+      <p class="hint" id="proy-hint"></p>
+      <label class="field slider">
+        <span>Si en lo que falta obtienes <strong id="s-val">80</strong>%</span>
+        <input type="range" id="escenario" min="0" max="100" step="5" value="80">
+      </label>
+      <div class="proj">
+        <div><span class="label">Final estimada</span><span id="final" class="num-sm">—</span></div>
+        <div><span class="label">Promedio que necesitas en lo que falta para <span id="min-lbl">70</span></span><span id="necesitas" class="num-sm">—</span></div>
+      </div>
+      <p class="fine">Es una estimación. La calificación oficial es la que registra el profesor.</p>
+    </aside>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Ponderación: asistencia 10% · parciales 50% · tareas 20% · proyecto 10% · trabajo en equipo 5% · otros 5%. La asistencia se mide contra el alumno con más asistencias del grupo. <span id="upd"></span></p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="calc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
