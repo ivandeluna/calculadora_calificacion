@@ -25,7 +25,19 @@
     if (savedG && C.materias[selMateria.value].grupos[savedG]) selGrupo.value = savedG;
   }
 
-  const grupoActual = () => C.materias[selMateria.value].grupos[selGrupo.value];
+  const materiaActual = () => C.materias[selMateria.value];
+  const esAutoeval = () => materiaActual().tipoEquipo === "autoevaluacion";
+
+  // Normaliza el grupo: en "autoevaluacion" el equipo es una sola calificación del semestre
+  function grupoActual() {
+    const g = materiaActual().grupos[selGrupo.value];
+    if (!esAutoeval()) return g;
+    return {
+      ...g,
+      equipo: g.equipo ? [{ nombre: "Autoevaluación de trabajo en equipo" }] : [],
+      planeado: { ...(g.planeado || {}), equipo: 1 },
+    };
+  }
 
   // ---------- construcción del formulario
   // Un elemento de la config puede ser "Tarea 1" o { nombre: "Tarea 1", descripcion: "…" }
@@ -69,9 +81,13 @@
         ${g.tareas.map((it, i) => filaSelect(`ta${i}`, it, OPC_TAREA)).join("")}
         </div></fieldset>`);
     }
-    if (g.equipo.length) {
+    if (g.equipo.length && esAutoeval()) {
       html.push(`<fieldset><legend>Trabajo en equipo <em>5%</em></legend>
-        <p class="note">Exposiciones en equipo: cuenta si presentaste o no.</p><div class="items">
+        <p class="note">Es la calificación del semestre que se asignan los integrantes de tu equipo.</p>
+        ${numInput("eq0", "Autoevaluación de trabajo en equipo", 100, "")}</fieldset>`);
+    } else if (g.equipo.length) {
+      html.push(`<fieldset><legend>Trabajo en equipo <em>5%</em></legend>
+        <p class="note">Una exposición en equipo por parcial: cuenta si presentaste o no.</p><div class="items">
         ${g.equipo.map((it, i) => filaSelect(`eq${i}`, it, OPC_EQUIPO)).join("")}
         </div></fieldset>`);
     }
@@ -85,7 +101,7 @@
     }
 
     const pend = [];
-    if (!g.equipo.length) pend.push("trabajo en equipo");
+    if (!g.equipo.length) pend.push(esAutoeval() ? "autoevaluación de trabajo en equipo" : "exposiciones en equipo");
     if (!g.proyecto) pend.push("proyecto");
     if (!g.otros) pend.push("otros");
     if (pend.length) {
@@ -97,7 +113,7 @@
     }
 
     $("inputs").innerHTML = html.join("");
-    $("meta").textContent = `Evaluado en ${selGrupo.value}: ${g.examenes.length} parcial(es), ${g.tareas.length} tarea(s)${g.equipo.length ? `, ${g.equipo.length} exposición(es) en equipo` : ""}.`;
+    $("meta").textContent = `Evaluado en ${selGrupo.value}: ${g.examenes.length} parcial(es), ${g.tareas.length} tarea(s)${g.equipo.length && !esAutoeval() ? `, ${g.equipo.length} exposición(es) en equipo` : ""}.`;
     $("inputs").querySelectorAll("input, select").forEach((el) => el.addEventListener("input", calcular));
     calcular();
   }
@@ -116,7 +132,8 @@
       asistencias: val("asis"),
       examenes: g.examenes.map((_, i) => val(`ex${i}`)),
       tareas: g.tareas.map((_, i) => val(`ta${i}`)),
-      equipo: g.equipo.map((_, i) => val(`eq${i}`)),
+      // Exposiciones: 1/0. Autoevaluación: 0–100 → 0–1
+      equipo: g.equipo.map((_, i) => { const v = val(`eq${i}`); return v !== null && esAutoeval() ? v / 100 : v; }),
       proyecto: val("proy"),
       otros: val("otros"),
     };
