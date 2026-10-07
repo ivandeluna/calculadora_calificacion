@@ -17,7 +17,7 @@ Calculadora anónima para que los alumnos de la FCA de **Aplicar Administración
 
 - **Asistencia:** se compara contra el alumno que más asistencias tiene en el grupo (`maxAsistencias`). Quien tenga ese número obtiene el 10% completo; los demás, la proporción.
 - **Calificación actual:** igual que los cortes del control de calificaciones, usa sólo los rubros que ya se evaluaron en el grupo y la reescala a 100.
-- **Proyección final:** combina lo que ya se tiene con un escenario ("si en lo que falta saco X%"). También calcula el promedio que hace falta en lo restante para llegar a 70.
+- **Proyección final:** combina lo que ya se tiene con un escenario ("si en lo que falta saco X%"). También calcula el promedio que hace falta en lo restante para llegar a 80 (calificación mínima aprobatoria, `minimoAprobatorio` en `config.js`).
 - **Tareas:** Completa = 1, Incompleta = 0.5, No entregada = 0.
 - **Trabajo en equipo:** cambia según la materia (`tipoEquipo` en `config.js`):
   - *Manejar Finanzas Internacionales* (`"exposiciones"`): una exposición por parcial; Presenté = 1, No presenté = 0, y se promedian.

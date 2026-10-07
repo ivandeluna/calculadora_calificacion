@@ -26,7 +26,7 @@
  */
 window.CALC_CONFIG = {
   actualizado: "6 de octubre de 2026",
-  minimoAprobatorio: 70,
+  minimoAprobatorio: 80,
 
   // Pesos (deben sumar 100). Iguales en ambas materias.
   ponderacion: {
@@ -47,7 +47,8 @@ window.CALC_CONFIG = {
           maxAsistencias: 12,
           examenes: ["Parcial 1"],
           tareas: [
-            { nombre: "Tarea 1", descripcion: "" }, // ← escribe aquí de qué trata
+            "Tarea sobre empresa",
+            "Investigar instrumento de inversión",
           ],
           equipo: false, // ← true cuando ya haya autoevaluación
           proyecto: false,
@@ -58,7 +59,7 @@ window.CALC_CONFIG = {
           maxAsistencias: 6,
           examenes: ["Parcial 1"],
           tareas: [
-            { nombre: "Tarea 1", descripcion: "" }, // ← escribe aquí de qué trata
+            "Tarea sobre empresa",
           ],
           equipo: false, // ← true cuando ya haya autoevaluación
           proyecto: false,
@@ -75,7 +76,7 @@ window.CALC_CONFIG = {
           maxAsistencias: 18,
           examenes: ["Parcial 1"],
           tareas: [
-            { nombre: "Tarea 1", descripcion: "" }, // ← escribe aquí de qué trata
+            "Tarea ejercicios",
           ],
           equipo: [
             { nombre: "Exposición 1", descripcion: "" },
@@ -88,7 +89,7 @@ window.CALC_CONFIG = {
           maxAsistencias: 7,
           examenes: ["Parcial 1"],
           tareas: [
-            { nombre: "Tarea 1", descripcion: "" }, // ← escribe aquí de qué trata
+            "Tarea ejercicios",
           ],
           equipo: [
             { nombre: "Exposición 1", descripcion: "" },
