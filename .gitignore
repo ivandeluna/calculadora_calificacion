@@ -1,0 +1,5 @@
+# Nunca subir calificaciones reales (contienen nombres de alumnos)
+*.xlsx
+*.xls
+*.csv
+.DS_Store
